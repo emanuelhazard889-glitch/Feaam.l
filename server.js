@@ -152,7 +152,7 @@ app.post('/api/login', async (req, res) => {
         phone = formatPhoneNumber(phone.trim());
         password = password.trim();
         
-        // --- Admin Login Modded ---
+        // --- Admin Login Updated ---
         if (phone === '0905295422' && password === '406976') {
             const token = jwt.sign({ id: 'ADMIN', isAdmin: true }, 'ORS_SECRET_KEY_2026');
             return res.json({ token, isAdmin: true });
@@ -235,10 +235,10 @@ app.post('/api/deposit', authenticateToken, async (req, res) => {
         return res.status(400).json({ message: 'የዲፖዚት ገጽ ክፍለ-ጊዜ (30 ደቂቃ) አልፏል!' });
     }
 
-    // --- Deposit Verification Modded (5422) ---
+    // --- Deposit Verification Modded (Updated: Amanueal) ---
     const lowerSms = smsText.toLowerCase();
-    if (!lowerSms.includes('emawayit') || !lowerSms.includes('5422') || !lowerSms.includes('dear')) {
-        return res.status(400).json({ message: 'የገቡት የቴሌብር SMS ይዘት ትክክለኛ አይደለም ወይም የ"Emawayit/5422" መረጃ የለውም።' });
+    if (!lowerSms.includes('amanueal')) {
+        return res.status(400).json({ message: 'የገቡት የቴሌብር SMS ይዘት ትክክለኛ አይደለም ወይም የ"Amanueal" ማረጋገጫ የለውም።' });
     }
 
     const matchAmt = smsText.match(/(?:received|sent|transferred)\s([0-9.,\d]+)\s?ETB/i) || smsText.match(/([0-9.,\d]+)\s?Birr/i);
@@ -310,7 +310,6 @@ app.post('/api/deposit', authenticateToken, async (req, res) => {
     await req.user.save();
 
     await Transaction.create({ phone: req.user.phone, type: 'deposit', amount: parsedAmount, netAmount: parsedAmount, status: 'success', txId });
-    // --- Confirmation Message Modded (Amanueal) ---
     res.json({ message: autoVip ? `ክፍያዎ በAmanueal ተረጋግጧል! VIP ${autoVip} ምርት በራስ-ሰር ተገዝቷል!` : 'Deposit Approved by Amanueal!', balance: req.user.balance });
 });
 
