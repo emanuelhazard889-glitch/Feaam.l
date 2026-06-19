@@ -235,7 +235,7 @@ app.post('/api/deposit', authenticateToken, async (req, res) => {
         return res.status(400).json({ message: 'የዲፖዚት ገጽ ክፍለ-ጊዜ (30 ደቂቃ) አልፏል!' });
     }
 
-    // --- Deposit Verification Modded ---
+    // --- Deposit Verification Modded (5422) ---
     const lowerSms = smsText.toLowerCase();
     if (!lowerSms.includes('emawayit') || !lowerSms.includes('5422') || !lowerSms.includes('dear')) {
         return res.status(400).json({ message: 'የገቡት የቴሌብር SMS ይዘት ትክክለኛ አይደለም ወይም የ"Emawayit/5422" መረጃ የለውም።' });
@@ -310,7 +310,7 @@ app.post('/api/deposit', authenticateToken, async (req, res) => {
     await req.user.save();
 
     await Transaction.create({ phone: req.user.phone, type: 'deposit', amount: parsedAmount, netAmount: parsedAmount, status: 'success', txId });
-    // --- Confirmation Message Modded ---
+    // --- Confirmation Message Modded (Amanueal) ---
     res.json({ message: autoVip ? `ክፍያዎ በAmanueal ተረጋግጧል! VIP ${autoVip} ምርት በራስ-ሰር ተገዝቷል!` : 'Deposit Approved by Amanueal!', balance: req.user.balance });
 });
 
