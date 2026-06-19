@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FEAAM COMPANY Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* አዲስ የከለር ስኬም - ጥልቅ ሰማያዊ እና ኢንዲጎ */
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --primary-red: #3b82f6; 
+            --accent-gold: #6366f1;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success-green: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Responsive Phone Container */
+        .phone-wrapper {
+            width: 100%;
+            max-width: 480px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding-bottom: 75px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        /* Premium Header */
+        .app-header {
+            background: linear-gradient(90deg, var(--primary-red) 0%, #1e293b 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-red);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .app-header h1 {
+            font-size: 22px;
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+        .app-header p {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Screens Base */
+        .screen {
+            display: none;
+            padding: 15px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .screen.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Auth Screen Styling */
+        .auth-container {
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .auth-logo {
+            width: 90px;
+            height: 90px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 35px;
+            box-shadow: 0 0 15px var(--primary-red);
+        }
+        .auth-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid #334155;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .auth-tab.active {
+            background: var(--primary-red);
+            color: white;
+            border-radius: 8px;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-red);
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .input-group input:focus { border-color: var(--primary-red); }
+
+        /* General Buttons */
+        .btn-premium {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, var(--primary-red), var(--accent-gold));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+            transition: 0.2s;
+        }
+        .btn-premium:active { transform: scale(0.98); }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: #0f172a;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 999;
+        }
+        .nav-item {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 11px;
+            cursor: pointer;
+            flex: 1;
+        }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; }
+        .nav-item.active { color: var(--primary-red); }
+
+        /* 4-Button Grid Menu (Redesigned) */
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .grid-item {
+            background: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .grid-item i { font-size: 28px; color: var(--primary-red); margin-bottom: 10px; }
+        .grid-item span { font-size: 13px; font-weight: 600; display: block; }
+
+        /* Slider Banner Placeholders */
+        .promo-banner {
+            width: 100%;
+            height: 170px;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        /* Compact Machine Cards (Redesigned Products) */
+        .machine-card {
+            background: #1e293b;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            padding: 15px;
+            border: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .machine-icon-box {
+            width: 50px;
+            height: 50px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: var(--accent-gold);
+            border: 1px solid var(--primary-red);
+        }
+        .machine-info { flex: 1; }
+        .machine-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .machine-stats { font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 2px;}
+        .machine-stats span.green { color: var(--success-green); font-weight: bold; }
+        .btn-invest { width: auto; padding: 8px 15px; font-size: 12px; border-radius: 6px; background: var(--primary-red); border: none; color: white; font-weight: bold; cursor: pointer;}
+
+        /* Profile Block */
+        .profile-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+        .avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: #334155;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 3px solid var(--primary-red);
+        }
+        .balance-title { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+        .balance-amount { font-size: 32px; font-weight: 800; color: var(--success-green); margin-bottom: 5px; }
+
+        /* Sub matrix for Profile Info rows */
+        .matrix-list {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+        .matrix-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #334155;
+            cursor: pointer;
+        }
+        .matrix-row:last-child { border-bottom: none; }
+        .matrix-left { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+        .matrix-left i { color: var(--primary-red); width: 20px; text-align: center;}
+
+        /* Telebirr Verification Framework Box */
+        .telebirr-box {
+            background: #334155;
+            border: 2px dashed var(--accent-gold);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        .telebirr-box strong { color: #818cf8; font-size: 15px; }
+
+        /* History Table Log entries */
+        .log-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            border-left: 4px solid var(--primary-red);
+        }
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .status-pending { background: #d69e2e; color: #fff; }
+        .status-success { background: #38a169; color: #fff; }
+
+        /* Quick modal or alert fallback banner */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            border: 1px solid var(--primary-red);
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 13px;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        /* Admin Layout Elements */
+        .admin-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .admin-card {
+            background: #334155;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .admin-card div { font-size: 18px; font-weight: bold; margin-top: 5px; color: var(--success-green); }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="appToast"></div>
+
+    <div class="phone-wrapper">
+        <div class="app-header">
+            <h1 id="headerTitle">FEAAM COMPANY</h1>
+            <p id="headerSubtitle">Premium Investment Engine</p>
+        </div>
+
+        <div id="screen-auth" class="screen active">
+            <div class="auth-container">
+                <div class="auth-logo"><i class="fa-solid fa-microchip"></i></div>
+                <div class="auth-tabs">
+                    <div class="auth-tab active" onclick="switchAuthTab('login')">Log In</div>
+                    <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+                </div>
+
+                <div id="auth-fields">
+                    <div class="input-group">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="auth-phone" placeholder="Phone Number (09...)">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="auth-pass" placeholder="Password">
+                    </div>
+                    <div id="register-only-fields" style="display: none;">
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="auth-pass2" placeholder="Confirm Password">
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <input type="text" id="auth-promo" placeholder="Promo Code (Optional)">
+                        </div>
+                    </div>
+                    <button class="btn-premium" style="margin-top: 10px;" id="btnAuthSubmit" onclick="handleAuth()">LOG IN</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-home" class="screen">
+            <div class="promo-banner" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop');"></div>
+            
+            <div class="grid-menu">
+                <div class="grid-item" onclick="openDepositPage()">
+                    <i class="fa-solid fa-wallet"></i><span>Deposit</span>
+                </div>
+                <div class="grid-item" onclick="switchScreen('withdraw')">
+                    <i class="fa-solid fa-money-bill-transfer"></i><span>Withdraw</span>
+                </div>
+                <div class="grid-item" onclick="switchScreen('history')">
+                    <i class="fa-solid fa-clock-history"></i><span>History</span>
+                </div>
+                <div class="grid-item" onclick="switchScreen('promobonus')">
+                    <i class="fa-solid fa-gift"></i><span>Redeem Bonus</span>
+                </div>
+            </div>
+
+            <div class="matrix-list" style="margin-top: 15px;">
+                <div class="matrix-row" onclick="openSupportLink()">
+                    <div class="matrix-left"><i class="fa-solid fa-headset"></i><span>Contact Support</span></div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #444;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-deposit" class="screen">
+            <h3 style="margin-bottom: 15px; font-size: 16px;"><i class="fa-solid fa-wallet"></i> Top-up Balance</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Select deposit target package size:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                <button class="btn-premium" style="background: #334155; border: 1px solid #44;" onclick="setDepositAmount(900)">900 ETB</button>
+                <button class="btn-premium" style="background: #334155; border: 1px solid #44;" onclick="setDepositAmount(1800)">1800 ETB</button>
+                <button class="btn-premium" style="background: #334155; border: 1px solid #44;" onclick="setDepositAmount(3600)">3600 ETB</button>
+                <button class="btn-premium" style="background: #334155; border: 1px solid #44;" onclick="setDepositAmount(7200)">7200 ETB</button>
+                <button class="btn-premium" style="background: #334155; border: 1px solid #44; grid-column: span 2;" onclick="setDepositAmount(10000)">10000 ETB</button>
+            </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-money-bill-wave"></i>
+                <input type="number" id="deposit-amount" placeholder="Chosen Amount" readonly>
+            </div>
+
+            <div class="telebirr-box">
+                <p>⚠️ Please send exact chosen amount to Telebirr Account:</p>
+                <p style="font-size: 18px; font-weight: bold; margin: 5px 0; color: #fff;">Account: <span style="color:#ffd700;">0945221136</span></p>
+                <p style="font-size: 14px;">Receiver Name: <strong style="color: var(--success-green);">EMAWAYIT</strong></p>
+            </div>
+
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Paste the FULL Telebirr confirmation text below:</p>
+            <textarea id="telebirr-sms" style="width:100%; height: 110px; background:#0f172a; border:1px solid #334155; border-radius:8px; color:white; padding:10px; font-size:12px; outline:none; margin-bottom:15px; resize:none;" placeholder="Paste the complete text message received here..."></textarea>
+            
+            <button class="btn-premium" onclick="processDepositVerification()">VERIFY TRANSACTION</button>
+        </div>
+
+        <div id="screen-product" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="font-size: 16px;">Industrial Machines</h3>
+                <button class="btn-premium" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="showMyProducts()">My Machines</button>
+            </div>
+
+            <div class="machine-card">
+                <div class="machine-icon-box"><i class="fa-solid fa-server"></i></div>
+                <div class="machine-info">
+                    <div class="machine-title">Data Server Node A</div>
+                    <div class="machine-stats">
+                        <span>Cost: 900 ETB</span>
+                        <span>Daily: <span class="green">+100 ETB</span></span>
+                    </div>
+                </div>
+                <button class="btn-invest" onclick="buyProduct(1, 900, 100)">Invest</button>
+            </div>
+
+            <div class="machine-card">
+                <div class="machine-icon-box"><i class="fa-solid fa-microchip"></i></div>
+                <div class="machine-info">
+                    <div class="machine-title">Crypto Mining Rig V2</div>
+                    <div class="machine-stats">
+                        <span>Cost: 1800 ETB</span>
+                        <span>Daily: <span class="green">+300 ETB</span></span>
+                    </div>
+                </div>
+                <button class="btn-invest" onclick="buyProduct(2, 1800, 300)">Invest</button>
+            </div>
+
+            <div class="machine-card">
+                <div class="machine-icon-box"><i class="fa-solid fa-robot"></i></div>
+                <div class="machine-info">
+                    <div class="machine-title">AI Processing Unit X</div>
+                    <div class="machine-stats">
+                        <span>Cost: 3600 ETB</span>
+                        <span>Daily: <span class="green">+600 ETB</span></span>
+                    </div>
+                </div>
+                <button class="btn-invest" onclick="buyProduct(3, 3600, 600)">Invest</button>
+            </div>
+
+            <div class="machine-card">
+                <div class="machine-icon-box"><i class="fa-solid fa-industry"></i></div>
+                <div class="machine-info">
+                    <div class="machine-title">Heavy Industrial Core</div>
+                    <div class="machine-stats">
+                        <span>Cost: 7200 ETB</span>
+                        <span>Daily: <span class="green">+1200 ETB</span></span>
+                    </div>
+                </div>
+                <button class="btn-invest" onclick="buyProduct(4, 7200, 1200)">Invest</button>
+            </div>
+
+            <div class="machine-card">
+                <div class="machine-icon-box"><i class="fa-solid fa-network-wired"></i></div>
+                <div class="machine-info">
+                    <div class="machine-title">Quantum Network Hub</div>
+                    <div class="machine-stats">
+                        <span>Cost: 10000 ETB</span>
+                        <span>Daily: <span class="green">+1640 ETB</span></span>
+                    </div>
+                </div>
+                <button class="btn-invest" onclick="buyProduct(5, 10000, 1640)">Invest</button>
+            </div>
+        </div>
+
+        <div id="screen-referal" class="screen">
+            <h3 style="margin-bottom: 15px; font-size: 16px;"><i class="fa-solid fa-users"></i> Affiliate Hub</h3>
+            
+            <div class="profile-card" style="text-align: left; padding: 15px;">
+                <p style="font-size: 12px; color: var(--text-muted);">Your Personal Invitation Link</p>
+                <div style="display: flex; gap: 8px; margin-top: 5px; margin-bottom: 15px;">
+                    <input type="text" id="share-link-input" style="flex:1; background:#0f172a; border:1px solid #334155; border-radius:6px; color:white; padding:8px; font-size:12px;" readonly>
+                    <button class="btn-premium" style="width:auto; padding: 0 15px;" onclick="copyReferralLink()">Copy</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                    <span>Your Code: <strong style="color:var(--accent-gold);" id="display-invite-code">------</strong></span>
+                </div>
+            </div>
+
+            <div class="admin-stat-grid">
+                <div class="admin-card">Total Network<div><span id="ref-count">0</span> Users</div></div>
+                <div class="admin-card">Valid Investors<div><span id="ref-valid-count">0</span> Paid</div></div>
+            </div>
+
+            <div class="matrix-list">
+                <div class="matrix-row"><span>Level 1 Bonus Structure</span><strong style="color:var(--success-green);">20%</strong></div>
+                <div class="matrix-row"><span>Level 2 Bonus Structure</span><strong style="color:var(--success-green);">2%</strong></div>
+                <div class="matrix-row"><span>Level 3 Bonus Structure</span><strong style="color:var(--success-green);">1%</strong></div>
+            </div>
+        </div>
+
+        <div id="screen-profile" class="screen">
+            <div class="profile-card">
+                <div class="avatar"><i class="fa-solid fa-user-shield"></i></div>
+                <div style="font-weight: bold; font-size: 16px;" id="profile-phone-display">+251 9********</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Verified Member of FEAAM</div>
+                
+                <div class="balance-title">CURRENT WALLET BALANCE</div>
+                <div class="balance-amount"><span id="user-balance-view">300.00</span> ETB</div>
+            </div>
+
+            <div class="matrix-list">
+                <div class="matrix-row" onclick="openPasswordChange()">
+                    <div class="matrix-left"><i class="fa-solid fa-key"></i><span>Change Security Password</span></div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #444;"></i>
+                </div>
+                <div id="bank-card-trigger-row" class="matrix-row" onclick="openBankCardChange()">
+                    <div class="matrix-left"><i class="fa-solid fa-credit-card"></i><span id="bank-row-label">Add Telebirr Card</span></div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #444;"></i>
+                </div>
+                <div class="matrix-row" onclick="switchScreen('history')">
+                    <div class="matrix-left"><i class="fa-solid fa-receipt"></i><span>Deposit & Wallet History</span></div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #444;"></i>
+                </div>
+                <div class="matrix-row" onclick="openOfficialChannel()">
+                    <div class="matrix-left"><i class="fa-brands fa-telegram"></i><span style="color: #64b5f6;">OFFICIAL TELEGRAM CHANNEL</span></div>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #444;"></i>
+                </div>
+                <div class="matrix-row" onclick="performLogout()">
+                    <div class="matrix-left"><i class="fa-solid fa-right-from-bracket"></i><span style="color: #e53935;">Sign Out Securely</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-withdraw" class="screen">
+            <h3 style="margin-bottom: 15px; font-size: 16px;"><i class="fa-solid fa-money-bill-transfer"></i> Payout Processing</h3>
+            
+            <div id="withdraw-locked-state" style="display: none; background: rgba(229,57,53,0.1); border: 1px solid #e53935; padding: 15px; border-radius: 8px; font-size: 13px; text-align: center; margin-bottom: 15px;">
+                ❌ Payout Locked! You must activate at least one Machine Investment to enable processing modules.
+            </div>
+
+            <div id="withdraw-active-state">
+                <div class="input-group">
+                    <i class="fa-solid fa-wallet"></i>
+                    <input type="number" id="withdraw-amount" placeholder="Minimum 300 ETB" oninput="calculateWithdrawalFee()">
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px; padding-left: 5px;">
+                    System Maintenance Handling Fee (15%): <span id="fee-calculated-view" style="color: var(--primary-red); font-weight: bold;">0.00</span> ETB
+                </div>
+                <button class="btn-premium" onclick="submitWithdrawRequest()">SEND PAYOUT REQUEST</button>
+            </div>
+        </div>
+
+        <div id="screen-history" class="screen">
+            <h3 style="margin-bottom: 15px; font-size: 16px;"><i class="fa-solid fa-receipt"></i> Statement Ledger</h3>
+            <div id="history-container">
+                <p style="text-align: center; color: var(--text-muted); font-size: 13px; padding-top: 20px;">No recorded events executed yet.</p>
+            </div>
+        </div>
+
+        <div id="screen-promobonus" class="screen">
+            <h3 style="margin-bottom: 15px; font-size: 16px;"><i class="fa-solid fa-gift"></i> Redeem Action Voucher</h3>
+            <div class="input-group">
+                <i class="fa-solid fa-ticket"></i>
+                <input type="text" id="input-promo-bonus-code" placeholder="Enter Administrative Promo Code">
+            </div>
+            <button class="btn-premium" style="margin-bottom: 15px;" onclick="claimPromoBonusCode()">REDEEM VOUCHER</button>
+            
+            <button class="btn-premium" style="background:#0088cc; box-shadow:none;" onclick="openOfficialChannel()">
+                <i class="fa-brands fa-telegram"></i> Get Code inside Telegram Channel
+            </button>
+        </div>
+
+        <div id="screen-admin" class="screen">
+            <h3 style="margin-bottom: 15px; font-size: 16px; color: var(--accent-gold);"><i class="fa-solid fa-gauge"></i> Executive Matrix Control Panel</h3>
+            
+            <div class="admin-stat-grid">
+                <div class="admin-card">Total Members<div id="adm-total-members">1</div></div>
+                <div class="admin-card">Total Deposited<div id="adm-total-deposits">0.00 ETB</div></div>
+                <div class="admin-card">Total Withdrawals<div id="adm-total-withdrawals">0.00 ETB</div></div>
+                <div class="admin-card">Pending Request Queue<div id="adm-total-pending" style="color: #d69e2e;">0</div></div>
+            </div>
+
+            <div class="profile-card" style="text-align: left; padding: 15px; margin-bottom: 15px;">
+                <p style="font-size: 12px; font-weight: bold; margin-bottom: 8px;">🔧 Platform Routing Pointers</p>
+                <input type="text" id="adm-support-link" placeholder="Support Chat Link" style="width:100%; padding:10px; background:#0f172a; border:1px solid #334155; border-radius:6px; color:white; font-size:12px; margin-bottom:10px;">
+                <input type="text" id="adm-channel-link" placeholder="Telegram Channel Link" style="width:100%; padding:10px; background:#0f172a; border:1px solid #334155; border-radius:6px; color:white; font-size:12px; margin-bottom:10px;">
+                <button class="btn-premium" style="font-size:12px; padding:8px;" onclick="saveAdminRoutingLinks()">Update Routing Ecosystem</button>
+            </div>
+
+            <div class="profile-card" style="text-align: left; padding: 15px; margin-bottom: 15px;">
+                <p style="font-size: 12px; font-weight: bold; margin-bottom: 8px;">🎫 Generate Global Action Code</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="adm-new-promo-code" placeholder="Example: BONUS77" style="flex:1; padding:10px; background:#0f172a; border:1px solid #334155; border-radius:6px; color:white; font-size:12px;">
+                    <button class="btn-premium" style="width:auto; font-size:12px; padding:0 15px;" onclick="createAdminPromoBonus()">Create</button>
+                </div>
+            </div>
+
+            <div class="profile-card" style="text-align: left; padding: 15px; margin-bottom: 20px;">
+                <p style="font-size: 12px; font-weight: bold; margin-bottom: 8px;">🔍 Database Tracker Engine Search</p>
+                <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                    <input type="tel" id="adm-search-phone" placeholder="Enter Phone (09...)" style="flex:1; padding:10px; background:#0f172a; border:1px solid #334155; border-radius:6px; color:white; font-size:12px;">
+                    <button class="btn-premium" style="width:auto; font-size:12px; padding:0 15px;" onclick="searchUserDatabase()">Search</button>
+                </div>
+
+                <div id="search-result-node" style="display: none; background:#0f172a; padding:10px; border-radius:8px; font-size:12px; line-height: 1.6;">
+                    <p>Phone: <span id="res-phone" style="font-weight: bold;">-</span></p>
+                    <p>Password: <span id="res-pass" style="color:var(--text-muted); font-weight: bold;">-</span></p>
+                    <p>Account Balance: <span id="res-bal" style="color:var(--success-green); font-weight:bold;">0</span> ETB</p>
+                    <p>Status: <span id="res-status" style="font-weight:bold;">Active</span></p>
+                    <p>Telebirr Account: <span id="res-bank-acc" style="color: #ffd700; font-weight: bold;">Not Added</span></p>
+                    <p>Account Name: <span id="res-bank-name" style="color: #64b5f6; font-weight: bold;">-</span></p>
+                    <p>Promo Code: <span id="res-invite" style="color: var(--accent-gold); font-weight: bold;">-</span></p>
+                    <p>Invited By: <span id="res-invited-by" style="color: var(--text-muted);">-</span></p>
+                    <p>Active VIP Products: <span id="res-products" style="color: #fff; font-weight: bold;">None</span></p>
+                    
+                    <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                        <input type="number" id="adm-modify-balance-val" placeholder="Amount" style="padding:6px; background:#1e293b; border:1px solid #444; border-radius:4px; color:white; font-size:11px;">
+                        <button class="btn-premium" style="font-size:11px; padding:5px;" onclick="executeAdminBalanceAdjustment()">Add Balance</button>
+                    </div>
+                    <div style="margin-top: 5px; display: flex; gap: 5px;">
+                        <button class="btn-premium" style="background:#e53935; font-size:11px; padding:5px; flex:1;" id="btnBanAction" onclick="toggleUserBanState(true)">Ban Account</button>
+                        <button class="btn-premium" style="background:#38a169; font-size:11px; padding:5px; flex:1;" id="btnUnbanAction" onclick="toggleUserBanState(false)">Unban</button>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-size: 13px; font-weight: bold; margin-bottom: 10px;">📋 Withdrawal Validation Queue</p>
+            <div id="admin-payout-queue-container"></div>
+        </div>
+
+        <div class="bottom-nav" id="appBottomNav" style="display: none;">
+            <div class="nav-item active" id="nav-home" onclick="switchScreen('home')">
+                <i class="fa-solid fa-house"></i>Home
+            </div>
+            <div class="nav-item" id="nav-product" onclick="switchScreen('product')">
+                <i class="fa-solid fa-server"></i>Machines
+            </div>
+            <div class="nav-item" id="nav-referal" onclick="switchScreen('referal')">
+                <i class="fa-solid fa-share-nodes"></i>Referral
+            </div>
+            <div class="nav-item" id="nav-profile" onclick="switchScreen('profile')">
+                <i class="fa-solid fa-user"></i>Profile
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global Default Dynamic Data Store Modules
+        let savedDB = localStorage.getItem('usersDatabase');
+        let usersDatabase = savedDB ? JSON.parse(savedDB) : {
+            "0905295422": { phone: "0905295422", pass: "406976", balance: 30000.00, inviteCode: "ADMIN0", refCodeUsed: "", products: [], lastCheckIn: null, isBanned: false, validInvestor: true, telebirrAcc: "0905295422", telebirrName: "Amanuel Admin" }
+        };
+
+        let currentActiveUser = null;
+        let globalUsedTransactionIDs = [];
+        let systemWithdrawalRequests = [];
+        let globalCreatedBonusVouchers = ["WELCOME77"]; 
+
+        // Editable System Variables Managed by Admin Control Panel
+        let targetTelegramChannel = "https://t.me/your_channel";
+        let targetSupportLink = "https://t.me/your_support";
+
+        // Initializer Engine Runtime Boot
+        window.onload = function() {
+            document.getElementById('adm-support-link').value = targetSupportLink;
+            document.getElementById('adm-channel-link').value = targetTelegramChannel;
+
+            // 1. Referral Auto-fill
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            if (refCode) {
+                document.getElementById('auth-promo').value = refCode;
+                switchAuthTab('register');
+            }
+
+            // 2. Persistent Login Check
+            const savedUserPhone = localStorage.getItem('activeUserPhone');
+            if (savedUserPhone && usersDatabase[savedUserPhone]) {
+                currentActiveUser = usersDatabase[savedUserPhone];
+                bootAuthenticatedUI(currentActiveUser.phone === "0905295422");
+            }
+        };
+
+        function showToast(msg) {
+            let t = document.getElementById('appToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3500);
+        }
+
+        function switchAuthTab(type) {
+            let tabLogin = document.querySelectorAll('.auth-tab')[0];
+            let tabReg = document.querySelectorAll('.auth-tab')[1];
+            let regFields = document.getElementById('register-only-fields');
+            let btn = document.getElementById('btnAuthSubmit');
+
+            if (type === 'login') {
+                tabLogin.classList.add('active');
+                tabReg.classList.remove('active');
+                regFields.style.display = 'none';
+                btn.innerText = "LOG IN";
+            } else {
+                tabReg.classList.add('active');
+                tabLogin.classList.remove('active');
+                regFields.style.display = 'block';
+                btn.innerText = "CREATE ACCOUNT";
+            }
+        }
+
+        function generateRandomInviteCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // FIXED REGISTER & LOGIN LOGIC
+        function handleAuth() {
+            let phone = document.getElementById('auth-phone').value.trim();
+            let pass = document.getElementById('auth-pass').value.trim();
+            let isReg = document.querySelectorAll('.auth-tab')[1].classList.contains('active');
+
+            if (!phone || !pass) return showToast("Please input valid credentials.");
+            if (!phone.startsWith("09") || phone.length !== 10) return showToast("Phone format must be 09XXXXXXXX.");
+
+            if (isReg) {
+                let pass2 = document.getElementById('auth-pass2').value.trim();
+                let promoUsed = document.getElementById('auth-promo').value.trim();
+
+                if (pass !== pass2) return showToast("Error: Passwords do not match!");
+                
+                if (usersDatabase[phone]) {
+                    showToast("Phone already registered! Switching to Log In mode.");
+                    switchAuthTab('login');
+                    return;
+                }
+
+                let generatedCode = generateRandomInviteCode().substring(0,4);
+
+                usersDatabase[phone] = {
+                    phone: phone,
+                    pass: pass,
+                    balance: 300.00,
+                    inviteCode: generatedCode,
+                    refCodeUsed: promoUsed,
+                    products: [],
+                    lastCheckIn: null,
+                    isBanned: false,
+                    validInvestor: false,
+                    telebirrAcc: null,
+                    telebirrName: null
+                };
+
+                // Save updated DB to localStorage
+                localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+
+                showToast("Account created! 300 Birr startup bonus granted.");
+                switchAuthTab('login');
+            } else {
+                if (phone === "0905295422" && pass === "406976") {
+                    currentActiveUser = usersDatabase[phone];
+                    localStorage.setItem('activeUserPhone', phone); // Save Session
+                    showToast("System Super-User Administrator authenticated.");
+                    bootAuthenticatedUI(true);
+                    return;
+                }
+
+                let target = usersDatabase[phone];
+                if (!target || target.pass !== pass) return showToast("Invalid credentials provided.");
+                if (target.isBanned) return showToast("Access Denied: This node has been terminated/banned.");
+
+                currentActiveUser = target;
+                localStorage.setItem('activeUserPhone', phone); // Save Session
+                showToast("Welcome back to FEAAM COMPANY Platform.");
+                bootAuthenticatedUI(false);
+            }
+        }
+
+        function bootAuthenticatedUI(isAdmin) {
+            document.getElementById('screen-auth').style.display = 'none';
+            document.getElementById('appBottomNav').style.display = 'flex';
+            
+            if (isAdmin) {
+                switchScreen('admin');
+            } else {
+                switchScreen('home');
+            }
+            updateAllInterfaceMetrics();
+        }
+
+        function switchScreen(id) {
+            if (currentActiveUser && currentActiveUser.isBanned) {
+                performLogout();
+                return;
+            }
+
+            let screens = document.querySelectorAll('.screen');
+            screens.forEach(s => s.classList.remove('active'));
+
+            let target = document.getElementById('screen-' + id);
+            if (target) target.classList.add('active');
+
+            let items = document.querySelectorAll('.nav-item');
+            items.forEach(i => i.classList.remove('active'));
+            let activeNav = document.getElementById('nav-' + id);
+            if (activeNav) activeNav.classList.add('active');
+
+            let hTitle = document.getElementById('headerTitle');
+            hTitle.innerText = id.toUpperCase() + " HUB";
+            if(id === 'home') hTitle.innerText = "FEAAM COMPANY";
+
+            updateAllInterfaceMetrics();
+        }
+
+        function updateAllInterfaceMetrics() {
+            if (!currentActiveUser) return;
+
+            document.getElementById('user-balance-view').innerText = currentActiveUser.balance.toFixed(2);
+            document.getElementById('profile-phone-display').innerText = "+251 " + currentActiveUser.phone.substring(1);
+            document.getElementById('display-invite-code').innerText = currentActiveUser.inviteCode;
+
+            let baseUrl = window.location.href.split('?')[0];
+            document.getElementById('share-link-input').value = baseUrl + "?ref=" + currentActiveUser.inviteCode;
+
+            let tNetwork = 0; let vNetwork = 0;
+            for (let k in usersDatabase) {
+                if(usersDatabase[k].refCodeUsed === currentActiveUser.inviteCode) {
+                    tNetwork++;
+                    if(usersDatabase[k].validInvestor) vNetwork++;
+                }
+            }
+            document.getElementById('ref-count').innerText = tNetwork;
+            document.getElementById('ref-valid-count').innerText = vNetwork;
+
+            let label = document.getElementById('bank-row-label');
+            if (currentActiveUser.telebirrAcc) {
+                label.innerText = "Telebirr Card: " + currentActiveUser.telebirrAcc + " (" + currentActiveUser.telebirrName + ")";
+            } else {
+                label.innerText = "Add Telebirr Card Setup";
+            }
+
+            if (currentActiveUser.products.length > 0 || currentActiveUser.phone === "0905295422") {
+                document.getElementById('withdraw-locked-state').style.display = 'none';
+                document.getElementById('withdraw-active-state').style.display = 'block';
+            } else {
+                document.getElementById('withdraw-locked-state').style.display = 'block';
+                document.getElementById('withdraw-active-state').style.display = 'none';
+            }
+
+            refreshHistoryLogs();
+            refreshAdminConsolePanelMetrics();
+        }
+
+        function copyReferralLink() {
+            let copyText = document.getElementById("share-link-input");
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(copyText.value)
+                    .then(() => { showToast("Referral link copied to clipboard!"); })
+                    .catch(() => { fallbackCopyLogic(copyText); });
+            } else {
+                fallbackCopyLogic(copyText);
+            }
+        }
+
+        function fallbackCopyLogic(inputElement) {
+            inputElement.select();
+            inputElement.setSelectionRange(0, 99999);
+            try {
+                document.execCommand("copy");
+                showToast("Referral link copied to clipboard!");
+            } catch (err) {
+                showToast("Failed to copy link automatically.");
+            }
+        }
+
+        function setDepositAmount(amt) {
+            document.getElementById('deposit-amount').value = amt;
+            document.getElementById('screen-deposit').setAttribute('data-opened-time', Date.now());
+        }
+
+        function openDepositPage() {
+            setDepositAmount(900);
+            switchScreen('deposit');
+        }
+
+        function processDepositVerification() {
+            let selectedAmt = parseFloat(document.getElementById('deposit-amount').value);
+            let rawSms = document.getElementById('telebirr-sms').value.trim();
+            let openedTime = document.getElementById('screen-deposit').getAttribute('data-opened-time');
+
+            if (!rawSms) return showToast("Error: Please input or paste the text notification record.");
+
+            if (openedTime && (Date.now() - parseInt(openedTime) > 1800000)) {
+                return showToast("Transaction Rejected: Validation window expired (30 Mins limit). Restart top-up process.");
+            }
+
+            let hasDear = /dear/i.test(rawSms);
+            let hasEmawayit = /emawayit/i.test(rawSms);
+            let hasTargetAccEnd = /1136/.test(rawSms);
+
+            if (!hasDear || !hasEmawayit || !hasTargetAccEnd) {
+                return showToast("Validation Failed: System authentication fingerprint signature missing from message text.");
+            }
+
+            let amtRegex = new RegExp(selectedAmt.toString());
+            if (!amtRegex.test(rawSms)) {
+                return showToast("Validation Failed: Chosen package amount does not coordinate with the text statement.");
+            }
+
+            let txMatch = /(?:txid|transaction id|id:?)\s*([a-zA-Z0-9]+)/i.exec(rawSms);
+            let txId = txMatch ? txMatch[1] : "TX" + Math.floor(100000 + Math.random()*900000);
+
+            if (globalUsedTransactionIDs.includes(txId)) {
+                return showToast("Security Violation: This transaction signature has already been claimed.");
+            }
+
+            globalUsedTransactionIDs.push(txId);
+            currentActiveUser.balance += selectedAmt;
+            currentActiveUser.validInvestor = true;
+
+            executeReferralRewardsCommission(currentActiveUser.refCodeUsed, selectedAmt);
+
+            if(!currentActiveUser.depositLogs) currentActiveUser.depositLogs = [];
+            currentActiveUser.depositLogs.push({ type: 'Deposit Auto-Verify', amount: selectedAmt, date: new Date().toLocaleDateString(), tx: txId });
+
+            // Update Database
+            localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+
+            showToast(`Success! Verified ${selectedAmt} ETB added to wallet database.`);
+            document.getElementById('telebirr-sms').value = "";
+            switchScreen('profile');
+        }
+
+        function executeReferralRewardsCommission(uplineCode, baseAmount) {
+            if(!uplineCode) return;
+            for (let k1 in usersDatabase) {
+                if (usersDatabase[k1].inviteCode === uplineCode) {
+                    let lvl1Bonus = baseAmount * 0.20;
+                    usersDatabase[k1].balance += lvl1Bonus;
+                    
+                    let parentCode = usersDatabase[k1].refCodeUsed;
+                    if (parentCode) {
+                        for (let k2 in usersDatabase) {
+                            if (usersDatabase[k2].inviteCode === parentCode) {
+                                let lvl2Bonus = baseAmount * 0.02;
+                                usersDatabase[k2].balance += lvl2Bonus;
+
+                                let grandParentCode = usersDatabase[k2].refCodeUsed;
+                                if (grandParentCode) {
+                                    for (let k3 in usersDatabase) {
+                                        if (usersDatabase[k3].inviteCode === grandParentCode) {
+                                            usersDatabase[k3].balance += (baseAmount * 0.01);
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        function calculateWithdrawalFee() {
+            let amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+            let fee = amt * 0.15;
+            document.getElementById('fee-calculated-view').innerText = fee.toFixed(2);
+        }
+
+        function submitWithdrawRequest() {
+            let amt = parseFloat(document.getElementById('withdraw-amount').value);
+            if (!amt || amt < 300) return showToast("Payout error: Minimum withdrawal constraint limit is 300 ETB.");
+            if (currentActiveUser.balance < amt) return showToast("Deficit: Insufficient liquidity balance available.");
+
+            if (!currentActiveUser.telebirrAcc) {
+                return showToast("Setup Failure: Please bind a target Telebirr account card first in your profile.");
+            }
+
+            let computedNetFee = amt * 0.15;
+            let finalDisbursementValue = amt - computedNetFee;
+
+            currentActiveUser.balance -= amt;
+            localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+
+            let reqId = "WREQ" + Date.now();
+            systemWithdrawalRequests.push({
+                id: reqId,
+                phone: currentActiveUser.phone,
+                totalRequested: amt,
+                feeDeduced: computedNetFee,
+                netPayable: finalDisbursementValue,
+                accountNo: currentActiveUser.telebirrAcc,
+                accountName: currentActiveUser.telebirrName,
+                status: 'pending'
+            });
+
+            showToast("Payout queued. Dispatched to Administration node verification engine.");
+            document.getElementById('withdraw-amount').value = "";
+            document.getElementById('fee-calculated-view').innerText = "0.00";
+            switchScreen('history');
+        }
+
+        function buyProduct(vipLvl, cost, dailyReturn) {
+            if (currentActiveUser.balance < cost) {
+                return showToast("Deficit: Insufficient liquidity balance. Complete a top-up sequence.");
+            }
+
+            currentActiveUser.balance -= cost;
+            let purchaseTime = Date.now();
+
+            currentActiveUser.products.push({
+                vip: vipLvl,
+                investmentCost: cost,
+                dailyYield: dailyReturn,
+                boughtAt: purchaseTime,
+                expiry: purchaseTime + (150 * 24 * 60 * 60 * 1000),
+                lastCollectedTimestamp: purchaseTime
+            });
+
+            localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+
+            showToast(`Machine Unit V${vipLvl} acquired successfully! Engine engaged.`);
+            
+            setInterval(() => {
+                currentActiveUser.balance += (dailyReturn / 86400);
+            }, 1000);
+
+            switchScreen('profile');
+        }
+
+        function showMyProducts() {
+            if(!currentActiveUser || currentActiveUser.products.length === 0) {
+                return showToast("No active operations recorded inside your terminal.");
+            }
+            let text = "Your Active Machines:\n";
+            currentActiveUser.products.forEach((p, idx) => {
+                text += `${idx+1}. V${p.vip} Machine - Yield: ${p.dailyYield} ETB/Day\n`;
+            });
+            alert(text);
+        }
+
+        function claimPromoBonusCode() {
+            let code = document.getElementById('input-promo-bonus-code').value.trim();
+            if (!code) return showToast("Input a voucher code sequence.");
+
+            if (!globalCreatedBonusVouchers.includes(code)) {
+                return showToast("Error: Input code signature invalid or expired.");
+            }
+
+            let randomRewardValue = Math.floor(Math.random() * 10) + 1;
+            currentActiveUser.balance += randomRewardValue;
+
+            globalCreatedBonusVouchers = globalCreatedBonusVouchers.filter(c => c !== code);
+            localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+
+            showToast(`Voucher Claimed! Granted random bonus reward: +${randomRewardValue}.00 ETB.`);
+            document.getElementById('input-promo-bonus-code').value = "";
+            switchScreen('profile');
+        }
+
+        function openPasswordChange() {
+            let p = prompt("Enter new security system password string:");
+            if(p && p.trim().length > 3) {
+                currentActiveUser.pass = p.trim();
+                localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+                showToast("Terminal system password registry mutated successfully.");
+            }
+        }
+
+        function openBankCardChange() {
+            let acc = prompt("Input your target Telebirr Phone Account Number (09...):");
+            let name = prompt("Input matching Telebirr registered legal identity name:");
+            if (acc && name) {
+                currentActiveUser.telebirrAcc = acc.trim();
+                currentActiveUser.telebirrName = name.trim();
+                localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+                showToast("Payout receiving credentials bound successfully.");
+                updateAllInterfaceMetrics();
+            }
+        }
+
+        function refreshHistoryLogs() {
+            let container = document.getElementById('history-container');
+            container.innerHTML = "";
+
+            let personalRequests = systemWithdrawalRequests.filter(r => r.phone === currentActiveUser.phone);
+            let hasDeposits = currentActiveUser.depositLogs && currentActiveUser.depositLogs.length > 0;
+
+            if (personalRequests.length === 0 && !hasDeposits) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size:13px; padding-top:20px;">No recorded events executed yet.</p>`;
+                return;
+            }
+
+            if (currentActiveUser.depositLogs) {
+                currentActiveUser.depositLogs.forEach(d => {
+                    let item = document.createElement('div');
+                    item.className = "log-item";
+                    item.style.borderLeftColor = "var(--success-green)";
+                    item.innerHTML = `<div><strong>Deposit Auto-Verify</strong><br><small style="color:#888;">Tx: ${d.tx}</small></div>
+                                      <div style="text-align:right;"><span style="color:var(--success-green); font-weight:bold;">+${d.amount} ETB</span><br><small style="color:#888;">${d.date}</small></div>`;
+                    container.appendChild(item);
+                });
+            }
+
+            personalRequests.forEach(r => {
+                let item = document.createElement('div');
+                item.className = "log-item";
+                let badgeClass = r.status === 'pending' ? 'status-pending' : 'status-success';
+                item.innerHTML = `<div><strong>Payout Request</strong><br><small style="color:#888;">Net Payable (15% Deduced): ${r.netPayable} ETB</small></div>
+                                  <div style="text-align:right;"><span class="status-badge ${badgeClass}">${r.status.toUpperCase()}</span><br><small style="color:#888; display:block; margin-top:4px;">${r.totalRequested} ETB</small></div>`;
+                container.appendChild(item);
+            });
+        }
+
+        function refreshAdminConsolePanelMetrics() {
+            document.getElementById('adm-total-members').innerText = Object.keys(usersDatabase).length;
+            
+            let totalDep = 0;
+            for(let k in usersDatabase){
+                if(usersDatabase[k].depositLogs){
+                    usersDatabase[k].depositLogs.forEach(l => totalDep += l.amount);
+                }
+            }
+            document.getElementById('adm-total-deposits').innerText = totalDep.toFixed(2) + " ETB";
+
+            let totalWithdrawn = 0;
+            let pendingCount = 0;
+            systemWithdrawalRequests.forEach(r => {
+                if(r.status === 'success') totalWithdrawn += r.totalRequested;
+                if(r.status === 'pending') pendingCount++;
+            });
+
+            document.getElementById('adm-total-withdrawals').innerText = totalWithdrawn.toFixed(2) + " ETB";
+            document.getElementById('adm-total-pending').innerText = pendingCount;
+
+            let qContainer = document.getElementById('admin-payout-queue-container');
+            qContainer.innerHTML = "";
+
+            let pendingItems = systemWithdrawalRequests.filter(r => r.status === 'pending');
+            if(pendingItems.length === 0) {
+                qContainer.innerHTML = `<p style="font-size:12px; color:var(--text-muted); text-align:center;">Queue empty.</p>`;
+            } else {
+                pendingItems.forEach(r => {
+                    let card = document.createElement('div');
+                    card.className = "admin-card";
+                    card.style.textAlign = "left";
+                    card.style.marginBottom = "10px";
+                    card.style.background = "#0f172a";
+                    card.innerHTML = `
+                        <p><strong>User:</strong> ${r.phone} (${r.accountName})</p>
+                        <p><strong>Telebirr Acc:</strong> ${r.accountNo}</p>
+                        <p><strong>Gross Claim Amount:</strong> ${r.totalRequested} ETB</p>
+                        <p style="color:var(--success-green);"><strong>Net Approved (After 15% system fee deduction):</strong> ${r.netPayable} ETB</p>
+                        <button class="btn-premium" style="font-size:11px; padding:5px; margin-top:8px; background:#38a169;" onclick="approveWithdrawRequest('${r.id}')">Approve Disbursement</button>
+                    `;
+                    qContainer.appendChild(card);
+                });
+            }
+        }
+
+        function createAdminPromoBonus() {
+            let code = document.getElementById('adm-new-promo-code').value.trim();
+            if(!code) return showToast("Input string value.");
+            globalCreatedBonusVouchers.push(code);
+            showToast(`Global Promo Code [ ${code} ] registered into memory cache.`);
+            document.getElementById('adm-new-promo-code').value = "";
+        }
+
+        function saveAdminRoutingLinks() {
+            targetSupportLink = document.getElementById('adm-support-link').value.trim();
+            targetTelegramChannel = document.getElementById('adm-channel-link').value.trim();
+            showToast("System routing links configuration updated.");
+        }
+
+        function searchUserDatabase() {
+            let query = document.getElementById('adm-search-phone').value.trim();
+            let resNode = document.getElementById('search-result-node');
+            let target = usersDatabase[query];
+
+            if(!target) {
+                resNode.style.display = 'none';
+                return showToast("Query empty: No account record correlated with that string phone input.");
+            }
+
+            resNode.style.display = 'block';
+            document.getElementById('res-phone').innerText = target.phone;
+            document.getElementById('res-pass').innerText = target.pass;
+            document.getElementById('res-bal').innerText = target.balance.toFixed(2);
+            document.getElementById('res-status').innerText = target.isBanned ? "BANNED / SHUTDOWN" : "ACTIVE OPERATIONAL";
+            
+            document.getElementById('res-bank-acc').innerText = target.telebirrAcc ? target.telebirrAcc : "Not Added Yet";
+            document.getElementById('res-bank-name').innerText = target.telebirrName ? target.telebirrName : "-";
+            
+            document.getElementById('res-invite').innerText = target.inviteCode;
+            document.getElementById('res-invited-by').innerText = target.refCodeUsed ? target.refCodeUsed : "Direct Signup";
+
+            if (target.products && target.products.length > 0) {
+                let pList = target.products.map(p => `V${p.vip}`).join(', ');
+                document.getElementById('res-products').innerText = pList;
+                document.getElementById('res-products').style.color = "var(--success-green)";
+            } else {
+                document.getElementById('res-products').innerText = "None (No Investment)";
+                document.getElementById('res-products').style.color = "var(--primary-red)";
+            }
+
+            resNode.setAttribute('data-active-search-key', query);
+        }
+
+        function executeAdminBalanceAdjustment() {
+            let key = document.getElementById('search-result-node').getAttribute('data-active-search-key');
+            let amt = parseFloat(document.getElementById('adm-modify-balance-val').value);
+            if(!amt || !usersDatabase[key]) return showToast("Invalid operation.");
+
+            usersDatabase[key].balance += amt;
+            localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+            
+            showToast(`Added ${amt} ETB balance override modification directly.`);
+            document.getElementById('adm-modify-balance-val').value = "";
+            searchUserDatabase();
+            updateAllInterfaceMetrics();
+        }
+
+        function toggleUserBanState(shouldBan) {
+            let key = document.getElementById('search-result-node').getAttribute('data-active-search-key');
+            if(!usersDatabase[key]) return;
+
+            usersDatabase[key].isBanned = shouldBan;
+            localStorage.setItem('usersDatabase', JSON.stringify(usersDatabase));
+
+            showToast(shouldBan ? "Account structural Node suspended/banned." : "Account ban status revoked.");
+            searchUserDatabase();
+        }
+
+        function approveWithdrawRequest(id) {
+            systemWithdrawalRequests.forEach(r => {
+                if(r.id === id) {
+                    r.status = 'success';
+                    showToast("Payout authorization successful.");
+                }
+            });
+            updateAllInterfaceMetrics();
+        }
+
+        function openSupportLink() { window.open(targetSupportLink, '_blank'); }
+        function openOfficialChannel() { window.open(targetTelegramChannel, '_blank'); }
+        
+        function performLogout() {
+            currentActiveUser = null;
+            localStorage.removeItem('activeUserPhone');
+            document.getElementById('appBottomNav').style.display = 'none';
+            switchScreen('auth');
+            switchAuthTab('login');
+            showToast("Secure context token destroyed. Signed out.");
+        }
+    </script>
+</body>
+</html>
